@@ -67,6 +67,9 @@ type (
 		// FindStatus returns build by repo token and branch.
 		FindStatus(string, string) (string, error)
 
+		// FindRepoBadge return more detailed info about build
+		FindRepoBadge(token, branch string) (*Repository, *Build, error)
+
 		// List returns list of builds from datastore
 		List(BuildFilter) ([]*Build, error)
 

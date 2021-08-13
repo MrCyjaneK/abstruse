@@ -75,6 +75,24 @@ func (s buildStore) FindStatus(token, branch string) (string, error) {
 	return core.BuildStatusPassing, nil
 }
 
+func (s buildStore) FindRepoBadge(token, branch string) (*core.Repository, *core.Build, error) {
+	build := &core.Build{}
+
+	repo, err := s.repos.FindToken(token)
+	if err != nil || repo == nil {
+		return &core.Repository{}, &core.Build{}, fmt.Errorf("repository not found")
+	}
+	if branch == "" {
+		branch = repo.DefaultBranch
+	}
+
+	err = s.db.Preload("Jobs").Where("pr = ? AND repository_id = ? AND branch = ?", 0, repo.ID, branch).Last(&build).Error
+	if err != nil {
+		return &core.Repository{}, &core.Build{}, err
+	}
+	return repo, build, nil
+}
+
 func (s buildStore) List(filters core.BuildFilter) ([]*core.Build, error) {
 	var builds []*core.Build
 	db := s.db
