@@ -1,0 +1,24 @@
+image: mrcyjanek/goprod:nodejs-linux
+
+script:
+  - make install_dependencies
+  - make build_ui
+  - make statik
+  - apt install -y protobuf-compiler
+  - PATH="$PATH:$GOPATH/bin" make protoc
+  - make wire
+  - mkdir -p build/{bin,deb}
+  - GOOS=linux GOARCH=arm64 go build -o "build/bin/abstruse-worker_linux_arm64" ./cmd/abstruse-worker
+  - GOOS=linux GOARCH=386 go build -o "build/bin/abstruse-worker_linux_386" ./cmd/abstruse-worker
+  - GOOS=linux GOARCH=arm go build -o "build/bin/abstruse-worker_linux_arm" ./cmd/abstruse-worker
+  - GOOS=linux GOARCH=amd64 go build -o "build/bin/abstruse-worker_linux_amd64" ./cmd/abstruse-worker
+  - GOOS=linux GOARCH=arm64 go build -o "build/bin/abstruse-server_linux_arm64" ./cmd/abstruse-server
+  - GOOS=linux GOARCH=386 go build -o "build/bin/abstruse-server_linux_386" ./cmd/abstruse-server
+  - GOOS=linux GOARCH=arm go build -o "build/bin/abstruse-server_linux_arm" ./cmd/abstruse-server
+  - GOOS=linux GOARCH=amd64 go build -o "build/bin/abstruse-server_linux_amd64" ./cmd/abstruse-server
+  - GOOS=linux GOARCH=arm64 checkinstall --type=debian --install=no --default --pkgname=abstruse-ci --pkgversion=0.0.0+git$(git show -s --date=format:%Y%m%d%H%M --format=%cd) --arch=arm64 --pakdir=build/deb --maintainer=cyjan@mrcyjanek.net --strip=no --stripso=no
+  - GOOS=linux GOARCH=386 checkinstall --type=debian --install=no --default --pkgname=abstruse-ci --pkgversion=0.0.0+git$(git show -s --date=format:%Y%m%d%H%M --format=%cd) --arch=i386 --pakdir=build/deb --maintainer=cyjan@mrcyjanek.net --strip=no --stripso=no
+  - GOOS=linux GOARCH=arm checkinstall --type=debian --install=no --default --pkgname=abstruse-ci --pkgversion=0.0.0+git$(git show -s --date=format:%Y%m%d%H%M --format=%cd) --arch=armhf --pakdir=build/deb --maintainer=cyjan@mrcyjanek.net --strip=no --stripso=no
+  - GOOS=linux GOARCH=amd64 checkinstall --type=debian --install=no --default --pkgname=abstruse-ci --pkgversion=0.0.0+git$(git show -s --date=format:%Y%m%d%H%M --format=%cd) --arch=amd64 --pakdir=build/deb --maintainer=cyjan@mrcyjanek.net --strip=no --stripso=no
+  - mv build/deb/* /apt
+  - mv build/bin/* /archive

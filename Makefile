@@ -66,4 +66,8 @@ test-unit:
 test-e2e:
 	go run ./tests/e2e
 
+install:
+	cp build/bin/abstruse-worker_${GOOS}_${GOARCH} /usr/bin/abstruse-worker
+	cp build/bin/abstruse-server_${GOOS}_${GOARCH} /usr/bin/abstruse-server
+
 .PHONY: build server worker build_ui statik wire install_dependencies clean dev dev_worker protoc docker docker_server docker_worker docker_push test test-unit test-e2e release
