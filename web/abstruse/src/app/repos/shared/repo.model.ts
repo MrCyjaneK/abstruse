@@ -20,7 +20,8 @@ export class Repo {
     public useSSH?: boolean,
     public createdAt?: Date,
     public updatedAt?: Date,
-    public perms?: Perms
+    public perms?: Perms,
+    public platforms?: string
   ) {}
 }
 
@@ -46,7 +47,8 @@ export function generateRepoModel(data: any): Repo {
     Boolean(data.useSSH),
     new Date(data.createdAt ? data.createdAt : null),
     new Date(data.updatedAt ? data.updatedAt : null),
-    data.perms || { read: false, write: false, exec: false }
+    data.perms || { read: false, write: false, exec: false },
+    data.platforms
   );
 }
 

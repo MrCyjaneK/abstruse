@@ -101,6 +101,14 @@ export class ReposService {
     );
   }
 
+  findPlatforms(id: number): Observable<string> {
+    return this.http.get<any>(`/repos/${id}/platforms`)
+  }
+
+  updatePlatforms(id: number, platforms: string): Observable<void> {
+    return this.http.post<void>(`/repos/${id}/platforms`, { platforms: platforms });
+  }
+
   createEnv(env: EnvVariable): Observable<void> {
     return this.repoSubject.pipe(
       filter(repo => !!repo),

@@ -216,6 +216,8 @@ func (r Router) reposRouter() *chi.Mux {
 	router.Get("/{id}/mounts", repo.HandleListMount(r.Mounts, r.Repos))
 	router.Put("/{id}/mounts", repo.HandleCreateMount(r.Mounts, r.Repos))
 	router.Post("/{id}/mounts", repo.HandleUpdateMount(r.Mounts, r.Repos))
+	router.Get("/{id}/platforms", repo.HandleListPlatform(r.Repos))
+	router.Post("/{id}/platforms", repo.HandleUpdatePlatform(r.Repos))
 	router.Delete("/{id}/mounts/{mountid}", repo.HandleDeleteMount(r.Mounts, r.Repos))
 	router.Put("/{id}/ssh-private-key", repo.HandleUpdateSSHPrivateKey(r.Repos))
 	router.Put("/{id}/misc", repo.HandleUpdateMisc(r.Repos))

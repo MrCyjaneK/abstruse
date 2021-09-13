@@ -171,4 +171,112 @@
       </div>
     </div>
   </div>
+  <div class="column is-12">
+    <div class="section">
+      <div class="columns">
+        <div class="column is-6">
+          <div class="inner-section">
+            <h4>Platforms</h4>
+            <div class="notification is-small">
+              <i class="fas fa-bars"></i>
+              <p>
+                Please select which platforms would you like to build on. Builds are emulated but native,
+                There is no cross-compilation going on, actual foreign architecture is being emulated in qemu.
+                To setup this feature do: <code>apt install -y qemu binfmt-support qemu-user-static && docker run --rm --privileged multiarch/qemu-user-static:register</code>
+                on your host
+              </p>
+            </div>
+            <app-toggle
+                label="linux/amd64"
+                [(ngModel)]="platforms!.linux_amd64"
+                (ngModelChange)="savePlatforms()"
+            >
+            </app-toggle>
+            <app-toggle
+              label="linux/386"
+              [(ngModel)]="platforms!.linux_386"
+              (ngModelChange)="savePlatforms()"
+            >
+            </app-toggle>
+            <app-toggle
+              label="linux/arm64"
+              [(ngModel)]="platforms!.linux_arm64"
+              (ngModelChange)="savePlatforms()"
+            >
+            </app-toggle>
+            <app-toggle
+              label="linux/arm/v6"
+              [(ngModel)]="platforms!.linux_arm_v6"
+              (ngModelChange)="savePlatforms()"
+            >
+            </app-toggle>
+            <app-toggle
+              label="linux/arm/v7"
+              [(ngModel)]="platforms!.linux_arm_v7"
+              (ngModelChange)="savePlatforms()"
+            >
+            </app-toggle>
+            <app-toggle
+              label="linux/riscv64"
+              [(ngModel)]="platforms!.linux_riscv64"
+              (ngModelChange)="savePlatforms()"
+            >
+            </app-toggle>
+            <app-toggle
+              label="linux/ppc64le"
+              [(ngModel)]="platforms!.linux_ppc64le"
+              (ngModelChange)="savePlatforms()"
+            >
+            </app-toggle>
+            <app-toggle
+              label="linux/s390x"
+              [(ngModel)]="platforms!.linux_s390x"
+              (ngModelChange)="savePlatforms()"
+            >
+            </app-toggle>
+          </div>
+        </div>
+        <div class="column is-6">
+          <div class="inner-section">
+            <h4>Build Badge</h4>
+            <div class="field">
+              <label class="label">Branch</label>
+              <input
+                type="text"
+                class="input"
+                name="branch"
+                [(ngModel)]="branch"
+                [ngModelOptions]="{ standalone: true }"
+              />
+              <span class="form-helper"> Branch you want to generate badge upon. </span>
+            </div>
+            <h4>Generated Badge</h4>
+            <img [src]="badgeURL" />
+
+            <span class="sub-title">Generated badge URL</span>
+            <span class="badge-result">
+              <span class="txt">{{ badgeURL }}</span>
+              <i
+                class="far fa-copy"
+                (click)="copyTextToClipboard(badgeURL)"
+                appTooltip
+                text="Copy to clipboard"
+              ></i>
+            </span>
+
+            <span class="sub-title">Generated Markdown</span>
+            <span class="badge-result">
+              <span class="txt">{{ badgeMarkdown }}</span>
+              <i
+                class="far fa-copy"
+                (click)="copyTextToClipboard(badgeMarkdown)"
+                appTooltip
+                text="Copy to clipboard"
+              ></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

@@ -26,6 +26,16 @@ export class SettingsComponent implements OnInit {
     pullRequest: false,
     tag: false
   };
+  platforms: { linux_amd64: boolean; linux_386: boolean; linux_arm64: boolean; linux_arm_v6: boolean; linux_arm_v7: boolean; linux_riscv64: boolean; linux_ppc64le: boolean; linux_s390x: boolean } = {
+    linux_amd64: false,
+    linux_386: false,
+    linux_arm64: false,
+    linux_arm_v6: false,
+    linux_arm_v7: false,
+    linux_riscv64: false,
+    linux_ppc64le: false,
+    linux_s390x: false
+  }
   config = '';
   fetchingConfig = false;
   editorOptions = { language: 'yaml', theme: 'abstruse' };
@@ -69,6 +79,23 @@ export class SettingsComponent implements OnInit {
       .subscribe(repo => {
         this.repo = repo as Repo;
         this.branch = repo?.defaultBranch as string;
+        console.log(this.repo)
+        let ps = this.repo.platforms?.split(";")
+        if (ps === undefined) {
+          return
+        }
+        for (let i = 0; i < ps.length; i++) {
+          const element = ps[i];
+          
+          if (element == "linux/amd64") {this.platforms.linux_amd64 = true}
+          if (element == "linux/386") {this.platforms.linux_386 = true}
+          if (element == "linux/arm64") {this.platforms.linux_arm64 = true}
+          if (element == "linux/arm/v6") {this.platforms.linux_arm_v6 = true}
+          if (element == "linux/arm/v7") {this.platforms.linux_arm_v7 = true}
+          if (element == "linux/riscv64") {this.platforms.linux_riscv64 = true}
+          if (element == "linux/ppc64le") {this.platforms.linux_ppc64le = true}
+          if (element == "linux/s390x") {this.platforms.linux_s390x = true}
+        }
       });
 
     // this.findHooks();
@@ -110,6 +137,32 @@ export class SettingsComponent implements OnInit {
       .saveHooks(data)
       .pipe(
         finalize(() => (this.saving = false)),
+        untilDestroyed(this)
+      )
+      .subscribe(
+        () => {},
+        err => {
+          this.error = err.message;
+        }
+      );
+  }
+
+  savePlatforms(): void {
+    this.saving = true;
+
+    let ps = []
+    if (this.platforms.linux_amd64) {ps.push("linux/amd64")}
+    if (this.platforms.linux_386) {ps.push("linux/386")}
+    if (this.platforms.linux_arm64) {ps.push("linux/arm64")}
+    if (this.platforms.linux_arm_v6) {ps.push("linux/arm/v6")}
+    if (this.platforms.linux_arm_v7) {ps.push("linux/arm/v7")}
+    if (this.platforms.linux_riscv64) {ps.push("linux/riscv64")}
+    if (this.platforms.linux_ppc64le) {ps.push("linux/ppc64le")}
+    if (this.platforms.linux_s390x) {ps.push("linux/s390x")}
+
+    this.reposService
+      .updatePlatforms(this.id, ps.join(";"))
+      .pipe(
         untilDestroyed(this)
       )
       .subscribe(
